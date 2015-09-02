@@ -1,0 +1,68 @@
+count = 1
+countlim = 8
+lastSize = Vector3.new(1,5,1)
+cf = CFrame.new(0,2.5,0)
+thispt2 = {}
+thispt = {}
+colort = {}
+
+function makePart(parent, anch, trans, collide, color, size, cf)
+	p = Instance.new("Part")
+	p.Parent = parent
+	p.formFactor = "Custom"
+	p.Anchored = anch
+	p.Transparency = trans
+	p.CanCollide = collide
+	p.Color = color
+	p.Size = size
+	p.TopSurface = 0
+	p.CFrame = cf
+	return p	
+end
+
+function makeCylinderMesh(pt,sc)
+	Instance.new("CylinderMesh",pt).Scale = sc
+end
+
+for i = 1, countlim-1 do
+	table.insert(colort, Color3.new(0.5,0.25,0)) -- Tree branch color
+end
+table.insert(colort, Color3.new(0,0.5,0)) -- Leaf color
+
+mod = Instance.new("Model")
+mod.Parent = game.Workspace
+mod.Name = "Tree"
+
+trunk = makePart(mod, true, 0, true, colort[1], lastSize, cf)
+makeCylinderMesh(trunk, Vector3.new(1,1,1))
+
+function split(thispt2)
+if count <= countlim then
+thispt = thispt2
+thispt2 = {}
+	for i = 1, #thispt do
+	thiscf = thispt[i].CFrame*CFrame.new(0,thispt[i].Size.Y/2,0)
+	nmsize = Vector3.new(thispt[i].Size.x*0.7,thispt[i].Size.y*0.75,thispt[i].Size.z*0.7)
+		if count == countlim then
+			nmsize = Vector3.new(thispt[i].Size.x*3,thispt[i].Size.x,thispt[i].Size.z*5)
+			pt = makePart(mod, true, 0, true, colort[count], nmsize, thiscf*CFrame.Angles(math.rad(90),0,0)*CFrame.new(0,0,nmsize.Z/-2))
+			msh = Instance.new("SpecialMesh",pt)
+			msh.MeshType = "Sphere"
+			msh.Scale = Vector3.new(1,0.4,1)
+		else
+			pt = makePart(mod, true, 0, true, colort[count], nmsize, thiscf*CFrame.Angles(math.rad(math.random(-30,30)),math.rad(math.random(-30,30)),math.rad(math.random(-30,30)))*CFrame.new(0,nmsize.Y/2,0))
+			makeCylinderMesh(pt, Vector3.new(1,1,1))
+			pt2 = makePart(mod, true, 0, true, colort[count], nmsize, thiscf*CFrame.Angles(math.rad(math.random(-30,30)),math.rad(math.random(-30,30)),math.rad(math.random(-30,30)))*CFrame.new(0,nmsize.Y/2,0))
+			makeCylinderMesh(pt2, Vector3.new(1,1,1))
+		end
+	table.insert(thispt2, pt)
+	table.insert(thispt2, pt2)
+	end
+count = count+1
+split(thispt2)
+end
+end
+
+split({trunk}) -- Weird way to call the function because it's recursive
+
+
