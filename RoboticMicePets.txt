@@ -1,0 +1,167 @@
+--[[Pet Cursor - made by bigbadbob234]]
+
+ply = game.Players.LocalPlayer
+char = ply.Character
+
+t = {
+{1,1},
+{1,1,1},
+{1,1,1,1},
+{1,1,1,1,1},
+{1,1,2,1,1,1},
+{1,1,2,2,1,1,1},
+{1,1,2,2,2,1,1,1},
+{1,1,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,2,2,2,2,2,1,1,1},
+{1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1},
+{1,1,2,2,2,1,2,2,1,1,1,1,1,1,1,1,1},
+{1,1,2,2,1,1,2,2,2,1,1},
+{1,1,2,1,1,1,1,2,2,1,1,1},
+{1,1,1,1,1,1,1,2,2,2,1,1},
+{1,1,1,1,0,1,1,1,2,2,1,1,1},
+{1,1,1,0,0,0,1,1,2,2,2,1,1},
+{1,1,0,0,0,0,1,1,1,2,2,1,1,1},
+{0,0,0,0,0,0,0,1,1,2,2,2,1,1},
+{0,0,0,0,0,0,0,1,1,1,2,2,1,1,1},
+{0,0,0,0,0,0,0,0,1,1,2,2,2,1,1},
+{0,0,0,0,0,0,0,0,1,1,1,2,2,1,1},
+{0,0,0,0,0,0,0,0,0,1,1,1,1,1,1},
+{0,0,0,0,0,0,0,0,0,0,1,1,1,1}
+}
+
+scale = 0.5
+
+--Picture of a cursor
+
+pttable1 = {}
+pttable2 = {}
+
+numPts = 0
+
+changeNum = 1
+changeEn1 = true
+ang1 = 45
+ang2 = 45
+ang3 = 45
+
+mdl = Instance.new("Model")
+mdl.Parent = game.Workspace
+mdl.Name = "Kano En Armoth"
+
+--[['Káno En Armoth' means 'commander of doom' in elvish
+...and I do realize that I mixed two different elvish dialects; 
+there's no need to point that out to me.]]
+
+head = Instance.new("Part")
+head.Parent = mdl
+head.Name = "Head"
+head.formFactor = "Custom"
+head.Size = Vector3.new(scale,scale,scale)
+head.Transparency = 0.9	
+head.CFrame = CFrame.new(0,108,0)
+
+bp = Instance.new("BodyPosition")
+bp.Parent = head
+bp.P = 9999
+bp.D = 500
+bp.maxForce = Vector3.new(math.huge,math.huge,math.huge)
+bp.position = Vector3.new(0,108,0)
+
+bg = Instance.new("BodyGyro")
+bg.Parent = head
+bg.P = 9999
+bg.D = 500
+bg.maxTorque = Vector3.new(math.huge,math.huge,math.huge)
+bg.cframe = CFrame.fromEulerAnglesXYZ(math.rad(ang1),math.rad(ang2),math.rad(ang3)) 
+
+h = Instance.new("Humanoid", mdl)
+h.MaxHealth = 0
+h.Health = 0
+
+function moreAngle(var, amo)
+var = var+amo
+	if var >= 360 then
+	var = var-360
+	end
+return var
+end
+
+function changeDir()
+if changeNum == 1 then
+ang1 = moreAngle(ang1,90)
+changeNum = 2
+elseif changeNum == 2 then
+ang1 = moreAngle(ang2,90)
+changeNum = 3
+elseif changeNum == 3 then
+ang1 = moreAngle(ang3,90)
+changeNum = 4
+elseif changeNum == 4 then
+ang1 = moreAngle(ang1,90)
+changeNum = 1
+end
+
+bg.cframe = CFrame.fromEulerAnglesXYZ(math.rad(ang1),math.rad(ang2),math.rad(ang3)) 
+
+end
+
+for i = 1, #t do
+	for j = 1, #t[i] do
+	if t[i][j] ~= 0 then 
+	numPts = numPts +1
+	pt = Instance.new("Part")
+	pt.Parent = mdl
+	pt.Name ="p"
+	pt.formFactor = "Custom"
+	pt.Size = Vector3.new(scale,scale,scale)
+
+	if t[i][j] == 1 then 
+	pt.Color = Color3.new(0,0,0)
+	else
+	pt.Color = Color3.new(1,1,1)
+	end
+	
+	pt.Anchored = false
+	pt.CFrame = CFrame.new(i*scale,1,j*scale)
+	pt.TopSurface = 0
+	pt.BottomSurface = 0
+	
+	wld = Instance.new("Weld")
+	wld.Parent = head
+	wld.Part0 = head
+	wld.Part1 = pt
+	wld.C0 = CFrame.new((i-1)*scale,0,(j-1)*scale)
+	wld.C1 = CFrame.new(0,0,0)
+
+	table.insert(pttable1, pt)
+
+	end
+	end
+end
+
+mdl:MoveTo(Vector3.new(0,20,0))
+
+hb = Instance.new("HopperBin")
+hb.Parent = ply.Backpack
+hb.Name = "Mouse"
+
+hb.Selected:connect(function(mouse)
+
+mouse.Move:connect(function()
+if mouse.Target.Parent.Name ~= mdl.Name and mouse.Hit ~= nil then
+bp.position = mouse.hit.p + Vector3.new(0,3,0)
+end
+end)
+
+mouse.Button1Down:connect(function()
+changeDir()
+end)
+
+end)
+
