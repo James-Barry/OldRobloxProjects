@@ -1,0 +1,73 @@
+--[[something to generate clean Shakespearian type 
+insults and show the meaning in simpler terms, 
+made primarily in order to review my vocab this year
+
+	~2012-2013
+
+]]
+
+AdjectiveList = {"dour","insidious","belligerent","pugnacious","contorted","clumsy","inept","malicious","degenerate","blustery","crude, uncouth, boorish","malevolent","musty,hackneyed",
+"portentous","parsimonious","phlegmatic,lackadaisical","capricous","gnarled","brash, impudent","emaciated","sophomoric, pretentious","contentious","disheveled","garrulous","loquacious",
+"long-winded","lamentable","deplorable","superficial","indulgent","implacable","innocuous","stentorian","bellicose","appalling","dissonant","abrasive","complacent","grotesque","boistrous",
+"narrow-minded","somnolent","malodorous"}
+
+AdjectiveMeaning = {"gloomy, ill-humored, stern, unyeilding", "sly, treacherous, underhanded, perfidious","war-like, combative","quick to argue","messed up","negative graceful","unskilled",
+"full of evil intentions","lacking the physical, mental, or moral qualities considered normal and desirable","hot-tempered","unelegant","wanting evil","old and out of date","unfavorable",
+"penny-pinching","lazy","subject to whims and fancies","twisted, lumpy","rash, uncautious","unnaturally thin","overconfident, concieted","inclined to argue","untidy","given to much talking",
+"tediously chatty","full of meaningless words","pitiable","fit to be regretted","skin-deep,insubstantial","yeilding to the wishes and demands of others","unable to be satisfied","insignificant",
+"extremely loud","quarrelsome","filling people around with horor","out of harmony","causing irritation","overly content","unnaturally distorted","annoying","not smart","drowsy","bad-smelling"}
+
+NounList = {"belligerent", "hinderance","impediment","fraud","craven","degenerate","renegade","martinet","rancor","wastrel","loafer","idler","profilgate","skinflint","tightwad","miser",
+"defamation"}
+NounMeaning = {"agressive person","brick wall","progress-stopper", "liar","coward","immoral or corrupt person","deserter/traitor","stickler for the rules","frighteningly ugly creature"
+,"wasteful person","lazy person","lazy person","lazy person","person who likes money too much","person who likes money too much","person who likes money too much","slander"}
+
+
+print("bigbadbob234's clean insult generator...")
+
+
+function generateInsult(numAdj)
+
+str = ""
+str2 = ""
+
+mr = math.random(1, #AdjectiveList)
+if numAdj == 1 then
+str = str..AdjectiveList[mr].." "
+str2 = str2..AdjectiveMeaning[mr].." "
+end
+
+for i = 1, numAdj do
+mr = math.random(1, #AdjectiveList)
+	if i == numAdj then 
+		str = str.."and "..AdjectiveList[mr].." "
+		str2 = str2.."and "..AdjectiveMeaning[mr].." "
+	elseif i == numAdj-1 and numAdj == 2 then 
+
+		str = str..AdjectiveList[mr].." "
+		str2 = str2..AdjectiveMeaning[mr].." "
+	else
+		str = str..AdjectiveList[mr]..", "
+		str2 = str2..AdjectiveMeaning[mr]..", "
+
+	end
+end
+
+mr = math.random(1, #NounList)
+str = str..NounList[mr]
+str2 = str2..NounMeaning[mr]
+
+str = string.upper(string.sub(str,1,1))..string.sub(str,2)..""
+str2 = string.upper(string.sub(str2,1,1))..string.sub(str2,2)..""
+return str, str2
+end
+
+for i = 1, 5 do 
+string, string2 = generateInsult(i)
+	print(string)
+	wait(0.5)
+	print(string2)
+	wait(4)
+end
+
+
