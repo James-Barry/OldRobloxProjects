@@ -1,0 +1,249 @@
+--[[ Weather - made by bigbadbob234, an example of my old and really not great
+scripting. This is partly an example of what _NOT_ to do. 
+Use functions kids; something like
+
+	function part(par,nam,siz,anch,lock,ccl,cf,tr,cl)
+		p=Instance.new("Part", par)
+		p.Name = nam
+		p.Size = siz
+		p.Anchored = anch
+		p.Locked = lock
+		p.CanCollide = ccl
+		p.CFrame = cf
+		p.Transparency = tr
+		p.Color = cl
+		return p
+	end
+
+works well to keep your scripts concise.
+Also, use good formatting, because
+
+	for ...
+	if ...
+	if ...
+	else ...
+	if ...
+	end
+	end
+	end
+	end
+
+isn't very easy to read, and you can easily have a missing/extra end. To say nothing
+of how hard it is for other people to read.
+
+	for ...
+		if ...
+			if ...
+			else ...
+				if ...
+				end
+			end
+		end
+	end
+
+is quite a bit better.
+The insides of functions should be indented too.
+
+]]
+
+
+weather = Instance.new("Model")
+weather.Parent = game.Workspace
+weather.Name = "Weather"
+
+h = Instance.new("Humanoid")
+h.Parent = mist
+
+x = Instance.new("StringValue")
+x.Parent = game.Players
+x.Name = "Weather"
+
+raining = false
+
+windmist = false
+
+strt = {"Mist","WindyMist","Rain"}
+
+string = "Mist"
+
+function mist()
+
+for h = -4, 4 do
+for i = -4,4 do
+for j = -1, 4 do 
+
+p = Instance.new("Part")
+p.Parent = weather
+p.Name = "Mist"
+p.Size = Vector3.new(35,35,35)
+p.Anchored = true
+p.Locked = true
+p.CanCollide = false
+p.CFrame = CFrame.new(h*35,j*35,i*35)
+p.Transparency = 0.3
+p.Color = Color3.new(0.8,1,1)
+
+end
+end
+end
+
+end
+
+function rain()
+
+raining = true
+
+p = Instance.new("Part")
+p.Parent = weather
+p.Name = "Water"
+p.Size = Vector3.new(game.Workspace:findFirstChild("Base").Size.x,4,game.Workspace:findFirstChild("Base").Size.z)
+p.Anchored = true
+p.Locked = true
+p.CanCollide = false
+p.CFrame = CFrame.new(0,2,0)
+p.Transparency = 0.3
+p.Color = Color3.new(0.8,1,1)
+p.TopSurface = 0
+p.BottomSurface = 0
+
+while raining == true do
+
+
+for j = 1, 5 do
+p = Instance.new("Part")
+p.Parent = weather
+p.Name = "Rain"
+p.Shape = "Ball"
+p.Size = Vector3.new(1,1,1)
+p.Anchored = false
+p.Locked = true
+p.CanCollide = false
+p.CFrame = CFrame.new(math.random((game.Workspace:findFirstChild("Base").Size.x)*-0.5,(game.Workspace:findFirstChild("Base").Size.x)*0.5),75,math.random((game.Workspace:findFirstChild("Base").Size.z)*-0.5,(game.Workspace:findFirstChild("Base").Size.z)*0.5))
+p.Transparency = 0.1
+p.Reflectance = 0.2
+p.Color = Color3.new(0,0.75,0.75)
+p.TopSurface = 0
+p.BottomSurface = 0
+end
+
+gm = weather:getChildren()
+
+for i = 1, #gm do
+if gm[i].Name == "Rain" and gm[i].CFrame.Y <= game.Workspace:findFirstChild("Base").CFrame.Y then
+gm[i]:remove()
+end
+end
+
+wait()
+
+end
+
+end
+
+function windymist()
+
+windmist = true
+
+m = Instance.new("Hint")
+m.Parent = game.Workspace
+m.Name = "Hint"
+m.Text = "A windy Mist is coming in...weather scripted by bigbadbob234"
+wait(5)
+
+m:remove()
+
+while windmist == true do
+
+p = Instance.new("Part")
+p.Parent = weather
+p.Name = "WindyMist"
+p.Size = Vector3.new(50,50,50)
+p.Anchored = true
+p.Locked = true
+p.CanCollide = false
+p.CFrame = CFrame.new((game.Workspace:findFirstChild("Base").Size.x)*-0.5,math.random(0,40),math.random((game.Workspace:findFirstChild("Base").Size.z)*-0.5,(game.Workspace:findFirstChild("Base").Size.z)*0.5))
+p.Transparency = 0.3
+p.Color = Color3.new(0.8,1,1)
+p.TopSurface = 0
+p.BottomSurface = 0
+
+for h = 1,11 do
+wait()
+gm = weather:getChildren()
+for i = 1, # gm do
+if gm[i].Name == "WindyMist" then
+
+cf = gm[i].CFrame
+if cf.x >= game.Workspace:findFirstChild("Base").Size.x/2 then
+gm[i]:remove()
+else
+
+gm[i].CFrame = CFrame.new(cf.x+1.5,cf.y,cf.z)
+
+
+end
+end
+end
+end
+end
+
+end
+
+function stop()
+
+raining = false
+windmist = false
+
+for h = 1, 10 do
+x = weather:getChildren()
+
+for i = 1, #x do
+x[i].Transparency = x[i].Transparency+(h*0.05)
+end
+wait()
+end
+
+y = weather:getChildren()
+
+for j = 1, #y do
+y[j]:remove()
+end
+
+
+end
+
+function randomwethr() 
+--[[ This is also bad style. It's good to have
+"normal-ish" function/variable names. It's not obvious for small scripts like
+this, but it's important for larger things; frees up valuable RAM in your
+wetware. Your brain, just in case this isn't clear, is something you probably
+should take good care of and value highly.]]
+
+string = strt[math.random(1,#strt)]
+
+if string == "Rain" then
+rain()
+else
+if string == "Mist" then
+mist()
+else
+if string == "WindyMist" then
+windymist()
+end
+end
+end
+
+end
+
+while true do
+
+randomwethr()
+
+wait(30)
+stop()
+
+wait(10)
+end
+
+print("Weather script loaded...made by bigbadbob234")
+
