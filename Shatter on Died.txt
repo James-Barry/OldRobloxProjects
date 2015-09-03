@@ -1,0 +1,114 @@
+--[[Shatter On Died, put this in the StarterGui to make it work for every player each time they die.]]
+
+ply = game.Players.LocalPlayer
+
+repeat
+wait()
+until ply.Character ~= nil
+
+char = ply.Character
+
+	function makeWedgePart(parent, anch, trans, collide, color, size, cf)
+		p = Instance.new("WedgePart")
+		p.Parent = parent
+		p.formFactor = "Custom"
+		p.Anchored = anch
+		p.Transparency = trans
+		p.CanCollide = collide
+		p.Color = color
+		p.Size = size
+		p.TopSurface = 0
+		p.BottomSurface = 0
+		p.CFrame = cf
+		return p	
+	end
+
+	function splitpart(part, collide)
+	
+	rtt = {}
+	ptt2 = {}
+
+	mod = Instance.new("Model")
+	mod.Parent = game.Workspace
+	mod.Name = "Parts"
+
+	for i = 1, 2 do
+	p = makeWedgePart(mod, part.Anchored, part.Transparency, collide, part.Color, Vector3.new(part.Size.Z,part.Size.Y/2,part.Size.X/2), part.CFrame*CFrame.Angles(0,math.rad(90),0)*CFrame.new(0,part.Size.Y/-4,part.Size.X/4)*CFrame.Angles(math.rad(i*180),0,0))
+	p.Name = "S"
+	table.insert(rtt,p)
+	p = makeWedgePart(mod, part.Anchored, part.Transparency, collide, part.Color, Vector3.new(part.Size.Z,part.Size.Y/2,part.Size.X/2), part.CFrame*CFrame.Angles(0,math.rad(-90),0)*CFrame.new(0,part.Size.Y/-4,part.Size.X/4)*CFrame.Angles(math.rad(i*180),0,0))
+	p.Name = "S"
+	table.insert(rtt,p)
+	p = makeWedgePart(mod, part.Anchored, part.Transparency, collide, part.Color, Vector3.new(part.Size.Z,part.Size.Y/2,part.Size.X/2), part.CFrame*CFrame.Angles(0,math.rad(90),0)*CFrame.Angles(math.rad(180),0,0)*CFrame.new(0,part.Size.Y/-4,part.Size.X/4)*CFrame.Angles(math.rad(i*180),0,0))
+	p.Name = "S"
+	table.insert(rtt,p)
+	p = makeWedgePart(mod, part.Anchored, part.Transparency, collide, part.Color, Vector3.new(part.Size.Z,part.Size.Y/2,part.Size.X/2), part.CFrame*CFrame.Angles(0,math.rad(-90),0)*CFrame.Angles(math.rad(180),0,0)*CFrame.new(0,part.Size.Y/-4,part.Size.X/4)*CFrame.Angles(math.rad(i*180),0,0))
+	p.Name = "S"
+	table.insert(rtt,p)
+	end
+
+	part:remove()
+
+	return rtt
+	end
+
+
+function FusRohDah(modx, point)
+
+v = modx:getChildren()
+
+for i = 1, #v do
+if v[i].className == "Part" then
+
+	g = splitpart(v[i],true)
+
+	for j = 1, #g do
+	g[j].Anchored = false
+	g[j].Velocity = (g[j].Position-point).unit*100
+	g[j]:BreakJoints()
+	game:getService("Debris"):AddItem(g[j],5)
+	end
+
+end
+end
+
+end
+
+repeat
+wait()
+until char:findFirstChild("Humanoid") ~= nil
+
+char.Humanoid.Died:connect(function()
+	if char.Humanoid:findFirstChild("Owner") ~= nil then
+	owner = Owner.Value
+
+
+		sg = Instance.new("ScreenGui",ply.PlayerGui)
+		txt = Instance.new("TextLabel",sg)
+		txt.BackgroundTransparency = 1
+		txt.Text = "You were slain by "..owner.."."
+		txt.Position = UDim2.new(0.5,-50,0.5,-25)
+		txt.Size = UDim2.new(0,100,0,50)
+		txt.fontSize = "Size24"
+
+		if game.Players[owner].Character:findFirstChild("Torso")~= nil then
+		FusRohDah(char,game.Players[owner].Character.Torso.Position)
+		elseif char:findFirstChild("Torso")~= nil then
+		position = char.Torso.Position+char.Torso.CFrame.lookVector
+		FusRohDah(char,position)
+		end
+	else
+		if char:findFirstChild("Torso")~= nil then
+		position = char.Torso.Position+char.Torso.CFrame.lookVector
+		FusRohDah(char,position)
+		end
+	end
+	wait(3)
+	
+		
+	ply:LoadCharacter()
+	script = nil
+end)
+
+
+
