@@ -1,0 +1,85 @@
+--[[
+Lets you throw pink bunny suits on people. 
+"Why would anyone want to do that ever?" 
+People need pink bunny suits. Because reasons.
+]]
+
+ply = game.Players.LocalPlayer
+repeat
+wait()
+until ply.Character ~= nil
+char = ply.Character
+
+function partpart(ParPart,mdl2)
+	pt = Instance.new("Part",mdl2)
+	pt.Color = Color3.new(1,0,1)
+	pt.Material = "Grass" -- Neon, Foil, Sand
+	pt.Anchored = false
+	pt.Position = Vector3.new(0,0,0)
+	pt.Size = ParPart.Size
+--	pt.CFrame = ParPart.CFrame -- makes fail happen.
+	pt.Position = Vector3.new(0,159,0)
+
+	weld = Instance.new("Weld")
+	weld.Parent = ParPart
+	weld.Part0 = ParPart
+	weld.Part1 = pt
+	weld.C0 = CFrame.new(0,0,0)
+	weld.C1 = CFrame.new(0,0,0)
+
+	blk = Instance.new("BlockMesh",pt)
+	blk.Scale = Vector3.new(1.05,1.05,1.05)
+	return pt, weld, blk
+end
+
+function bunnySuit(charmod)
+if charmod:findFirstChild("Bunny") then
+	charmod.Bunny:remove()
+else
+mdl = Instance.new("Model",charmod)
+mdl.Name = "Bunny"
+	for i,v in ipairs(charmod:getChildren()) do
+	if v.className == "Part" then
+	p, w, m = partpart(v,mdl)
+		if v.Name == "Torso" then
+		p2, w2, m2 = partpart(v,mdl)
+		p2.Color = Color3.new(1,.5,1)
+		w2.C0 = CFrame.new(0,0,-.15) -- eh?
+		m2:remove()
+		mnew = Instance.new("SpecialMesh",p2)
+		mnew.MeshType = "Sphere"
+		mnew.Scale = Vector3.new(0.8, 1, 1.25)
+		elseif v.Name == "Head" then
+		w.C0 = CFrame.new(0,0,.1) -- eh?
+		m.Scale = Vector3.new(0.75, 1.25, 1)
+		p2, w2, m2 = partpart(v,mdl)
+		p3, w3, m3 = partpart(v,mdl)
+		w2.C0 = CFrame.new(0.35,0,0.15)*CFrame.Angles(0,0,-0.2)*CFrame.new(0,1.5,0)
+		m2.Scale = Vector3.new(.3,1.5,.3)
+		w3.C0 = CFrame.new(-0.35,0,0.15)*CFrame.Angles(0,0,0.2)*CFrame.new(0,1.5,0)
+		m3.Scale = Vector3.new(.3,1.5,.3)
+		end
+	end
+	end
+return mdl
+end
+end
+
+hb = Instance.new("HopperBin",ply.Backpack)
+hb.Name = "PinkBunny"
+hb.Selected:connect(function(mouse)
+	mouse.Button1Down:connect(function()
+	if mouse.Target then
+	victim = mouse.Target.Parent
+		if victim and victim:findFirstChild("Humanoid") then
+		bunnySuit(victim)
+		end
+	end
+	end)
+
+	mouse.Button2Down:connect(function()
+			bunnySuit(char)
+	end)
+
+end)
+
